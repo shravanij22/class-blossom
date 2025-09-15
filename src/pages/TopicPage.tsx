@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import YouTubePlayer from '@/components/YouTubePlayer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Play, CheckCircle } from 'lucide-react';
 import { getSchoolLevel } from '@/data/educationData';
 import { toast } from 'sonner';
@@ -12,29 +12,17 @@ const TopicPage = () => {
   const { levelId, topicId } = useParams();
   const navigate = useNavigate();
   const [watchProgress, setWatchProgress] = useState(0);
-  const [isWatched, setIsWatched] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const schoolLevel = getSchoolLevel(levelId || '');
   const topic = schoolLevel?.topics.find(t => t.id === Number(topicId));
 
-  useEffect(() => {
-    if (watchProgress >= 100 && !isWatched) {
-      setIsWatched(true);
+  const handleProgressUpdate = (progress: number, completed: boolean) => {
+    setWatchProgress(progress);
+    if (completed && !isCompleted) {
+      setIsCompleted(true);
       toast.success("Topic completed! 🎉");
     }
-  }, [watchProgress, isWatched]);
-
-  const handleWatchVideo = () => {
-    // Simulate video watching progress
-    const interval = setInterval(() => {
-      setWatchProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 500);
   };
 
   if (!schoolLevel || !topic) {
@@ -72,27 +60,17 @@ const TopicPage = () => {
 
         <div className="bg-education-primary rounded-2xl p-8 mb-8">
           <h1 className="text-4xl font-bold text-white text-center mb-8">
-            Our Changing Earth
+            {topic.title}
           </h1>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="bg-gray-900 rounded-lg aspect-video flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Play className="w-8 h-8 text-white ml-1" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">GEOGRAPHY</h3>
-                <h4 className="text-lg mb-2">CHAPTER - {topic.id}</h4>
-                <h2 className="text-2xl font-bold">OUR CHANGING EARTH</h2>
-                <Button 
-                  onClick={handleWatchVideo}
-                  className="mt-4 bg-red-600 hover:bg-red-700"
-                  disabled={watchProgress > 0 && watchProgress < 100}
-                >
-                  {watchProgress === 0 ? 'Watch on YouTube' : 
-                   watchProgress === 100 ? 'Video Complete' : 'Watching...'}
-                </Button>
-              </div>
+            <div className="rounded-lg overflow-hidden">
+              <YouTubePlayer
+                videoId={topic.videoId}
+                levelId={levelId || ''}
+                topicId={Number(topicId)}
+                onProgressUpdate={handleProgressUpdate}
+              />
             </div>
             
             <div className="text-center text-white">
@@ -113,7 +91,7 @@ const TopicPage = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {isWatched ? (
+                  {isCompleted ? (
                     <CheckCircle className="w-8 h-8 text-green-400" />
                   ) : (
                     <span className="text-xl font-bold">{watchProgress}%</span>
@@ -121,11 +99,16 @@ const TopicPage = () => {
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-2">
-                {isWatched ? 'Complete!' : `${watchProgress}% Watched`}
+                {isCompleted ? 'Complete!' : `${watchProgress}% Watched`}
               </h3>
               <p className="text-white/80">
-                Video progress will update as you watch
+                Real-time progress tracking as you watch
               </p>
+              {topic.duration && (
+                <p className="text-white/60 text-sm mt-2">
+                  Duration: {Math.floor(topic.duration / 60)}:{(topic.duration % 60).toString().padStart(2, '0')}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -133,28 +116,23 @@ const TopicPage = () => {
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
             <CardTitle className="text-2xl text-education-primary">
-              Forces Acting on the Earth's Surface
+              {topic.title}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-education-primary rounded-full mt-2"></div>
-                <p><strong>Endogenic forces</strong> → forces inside the Earth.</p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-education-primary rounded-full mt-2"></div>
-                <p><strong>Exogenic forces</strong> → forces on the Earth's surface.</p>
-              </div>
+            <div className="prose prose-lg max-w-none">
+              <p className="text-muted-foreground leading-relaxed">
+                {topic.description}
+              </p>
             </div>
 
             <div className="mt-8 p-6 bg-education-light/20 rounded-lg">
               <h4 className="font-semibold mb-4 text-education-text">Learning Objectives:</h4>
               <ul className="space-y-2 text-sm">
-                <li>• Understand the difference between endogenic and exogenic forces</li>
-                <li>• Learn how these forces shape our planet's surface</li>
-                <li>• Explore examples of geological processes</li>
-                <li>• Discover the impact on human settlements</li>
+                <li>• Understand key environmental concepts and terminology</li>
+                <li>• Learn about sustainability and conservation practices</li>
+                <li>• Explore real-world examples and case studies</li>
+                <li>• Discover how individuals can make a positive impact</li>
               </ul>
             </div>
 
@@ -162,9 +140,10 @@ const TopicPage = () => {
               <Button 
                 onClick={() => navigate('/games')}
                 className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 text-lg font-semibold rounded-full"
+                disabled={!isCompleted}
               >
                 <Play className="w-5 h-5 mr-2" />
-                Play Related Games
+                {isCompleted ? 'Play Related Games' : 'Complete Video to Unlock Games'}
               </Button>
             </div>
           </CardContent>

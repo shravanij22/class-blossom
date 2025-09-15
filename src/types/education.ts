@@ -2,7 +2,9 @@ export interface Topic {
   id: number;
   title: string;
   description: string;
-  videoUrl?: string;
+  videoUrl: string;
+  videoId: string;
+  duration?: number; // in seconds
   completed: boolean;
   progress: number;
 }
