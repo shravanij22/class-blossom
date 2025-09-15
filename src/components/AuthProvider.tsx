@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface Profile {
   id: string;
@@ -149,21 +149,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error);
-      toast({
-        title: "Error",
-        description: "Failed to sign out",
-        variant: "destructive",
-      });
+      toast.error("Failed to sign out");
     } else {
       setUser(null);
       setProfile(null);
       setUserProfile(null);
       setUserRole(null);
       setSession(null);
-      toast({
-        title: "Success",
-        description: "Signed out successfully",
-      });
+      toast.success("Signed out successfully");
     }
   };
 
@@ -177,20 +170,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (error) {
       console.error('Error updating profile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile",
-        variant: "destructive",
-      });
+      toast.error("Failed to update profile");
     } else {
       const updatedProfile = await fetchUserProfile(user.id);
       setProfile(updatedProfile);
       setUserProfile(updatedProfile);
       setUserRole(updatedProfile?.role || null);
-      toast({
-        title: "Success",
-        description: "Profile updated successfully",
-      });
+      toast.success("Profile updated successfully");
     }
   };
 
