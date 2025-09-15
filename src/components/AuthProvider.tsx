@@ -4,16 +4,18 @@ import { supabase } from '@/lib/supabase';
 
 interface AuthContextType {
   user: User | null;
-  isAdmin: boolean;
+  userRole: 'admin' | 'teacher' | 'student' | null;
+  userProfile: any | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string, fullName: string, schoolLevel: string) => Promise<any>;
+  signUp: (email: string, password: string, fullName: string, role: 'teacher' | 'student', schoolLevel: string, className?: string) => Promise<any>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  isAdmin: false,
+  userRole: null,
+  userProfile: null,
   loading: true,
   signIn: async () => {},
   signUp: async () => {},
@@ -30,7 +32,8 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<'admin' | 'teacher' | 'student' | null>(null);
+  const [userProfile, setUserProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,9 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminStatus(session.user.id);
+        fetchUserProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     // Listen for auth changes
@@ -49,31 +53,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        await checkAdminStatus(session.user.id);
+        await fetchUserProfile(session.user.id);
       } else {
-        setIsAdmin(false);
+        setUserRole(null);
+        setUserProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminStatus = async (userId: string) => {
-    const { data } = await supabase
-      .from('users')
-      .select('is_admin')
-      .eq('id', userId)
-      .single();
-    
-    setIsAdmin(data?.is_admin || false);
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching user profile:', error);
+      } else {
+        setUserProfile(data);
+        setUserRole(data.role);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signIn = async (email: string, password: string) => {
     return await supabase.auth.signInWithPassword({ email, password });
   };
 
-  const signUp = async (email: string, password: string, fullName: string, schoolLevel: string) => {
+  const signUp = async (email: string, password: string, fullName: string, role: 'teacher' | 'student', schoolLevel: string, className?: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -85,8 +101,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         id: data.user.id,
         email,
         full_name: fullName,
+        role: email === 'admin@greenovate' ? 'admin' : role,
         school_level: schoolLevel,
-        is_admin: email === 'admin@greenovate',
+        class_name: className,
+        points: 0,
+        level: 1,
+        streak: 0,
       });
     }
 
@@ -99,7 +119,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = {
     user,
-    isAdmin,
+    userRole,
+    userProfile,
     loading,
     signIn,
     signUp,

@@ -51,25 +51,37 @@ export type Database = {
           id: string;
           email: string;
           full_name: string;
+          role: 'admin' | 'teacher' | 'student';
           school_level: string;
+          class_name?: string;
+          points: number;
+          level: number;
+          streak: number;
           created_at: string;
-          is_admin: boolean;
         };
         Insert: {
           id?: string;
           email: string;
           full_name: string;
+          role: 'admin' | 'teacher' | 'student';
           school_level: string;
+          class_name?: string;
+          points?: number;
+          level?: number;
+          streak?: number;
           created_at?: string;
-          is_admin?: boolean;
         };
         Update: {
           id?: string;
           email?: string;
           full_name?: string;
+          role?: 'admin' | 'teacher' | 'student';
           school_level?: string;
+          class_name?: string;
+          points?: number;
+          level?: number;
+          streak?: number;
           created_at?: string;
-          is_admin?: boolean;
         };
       };
       user_progress: {
@@ -157,6 +169,195 @@ export type Database = {
           score?: number;
           level?: number;
           completed_at?: string;
+        };
+      };
+      badges: {
+        Row: {
+          id: string;
+          name: string;
+          description: string;
+          icon: string;
+          points_required: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description: string;
+          icon: string;
+          points_required: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string;
+          icon?: string;
+          points_required?: number;
+          created_at?: string;
+        };
+      };
+      user_badges: {
+        Row: {
+          id: string;
+          user_id: string;
+          badge_id: string;
+          earned_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          badge_id: string;
+          earned_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          badge_id?: string;
+          earned_at?: string;
+        };
+      };
+      challenges: {
+        Row: {
+          id: string;
+          title: string;
+          description: string;
+          points_reward: number;
+          challenge_type: 'quiz' | 'activity' | 'simulation';
+          created_by: string;
+          target_role: 'student' | 'all';
+          target_level?: string;
+          is_active: boolean;
+          deadline?: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description: string;
+          points_reward: number;
+          challenge_type: 'quiz' | 'activity' | 'simulation';
+          created_by: string;
+          target_role?: 'student' | 'all';
+          target_level?: string;
+          is_active?: boolean;
+          deadline?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string;
+          points_reward?: number;
+          challenge_type?: 'quiz' | 'activity' | 'simulation';
+          created_by?: string;
+          target_role?: 'student' | 'all';
+          target_level?: string;
+          is_active?: boolean;
+          deadline?: string;
+          created_at?: string;
+        };
+      };
+      challenge_submissions: {
+        Row: {
+          id: string;
+          challenge_id: string;
+          user_id: string;
+          content: string;
+          file_url?: string;
+          status: 'pending' | 'approved' | 'rejected';
+          reviewed_by?: string;
+          review_comment?: string;
+          points_earned: number;
+          submitted_at: string;
+          reviewed_at?: string;
+        };
+        Insert: {
+          id?: string;
+          challenge_id: string;
+          user_id: string;
+          content: string;
+          file_url?: string;
+          status?: 'pending' | 'approved' | 'rejected';
+          reviewed_by?: string;
+          review_comment?: string;
+          points_earned?: number;
+          submitted_at?: string;
+          reviewed_at?: string;
+        };
+        Update: {
+          id?: string;
+          challenge_id?: string;
+          user_id?: string;
+          content?: string;
+          file_url?: string;
+          status?: 'pending' | 'approved' | 'rejected';
+          reviewed_by?: string;
+          review_comment?: string;
+          points_earned?: number;
+          submitted_at?: string;
+          reviewed_at?: string;
+        };
+      };
+      resources: {
+        Row: {
+          id: string;
+          title: string;
+          description: string;
+          file_url: string;
+          file_type: 'pdf' | 'video' | 'image' | 'document';
+          uploaded_by: string;
+          target_level?: string;
+          is_public: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description: string;
+          file_url: string;
+          file_type: 'pdf' | 'video' | 'image' | 'document';
+          uploaded_by: string;
+          target_level?: string;
+          is_public?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string;
+          file_url?: string;
+          file_type?: 'pdf' | 'video' | 'image' | 'document';
+          uploaded_by?: string;
+          target_level?: string;
+          is_public?: boolean;
+          created_at?: string;
+        };
+      };
+      activity_logs: {
+        Row: {
+          id: string;
+          user_id: string;
+          action: string;
+          details: string;
+          points_earned: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action: string;
+          details: string;
+          points_earned?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          action?: string;
+          details?: string;
+          points_earned?: number;
+          created_at?: string;
         };
       };
     };

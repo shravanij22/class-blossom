@@ -8,13 +8,13 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authTab, setAuthTab] = useState<'login' | 'signup'>('login');
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, userRole, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleAdminAccess = () => {
     // Hidden admin access: Hold Ctrl+Shift and click the logo
-    if (isAdmin) {
-      navigate('/admin');
+    if (userRole === 'admin') {
+      navigate('/admin-dashboard');
     }
   };
 
@@ -58,15 +58,37 @@ const Header = () => {
             <div className="flex items-center gap-2">
               {user ? (
                 <>
-                  {isAdmin && (
+                  {userRole === 'admin' && (
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => navigate('/admin')}
+                      onClick={() => navigate('/admin-dashboard')}
                       className="bg-white/10 border-white/20 text-white hover:bg-white hover:text-primary"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Admin
+                    </Button>
+                  )}
+                  {userRole === 'teacher' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate('/teacher-dashboard')}
+                      className="bg-white/10 border-white/20 text-white hover:bg-white hover:text-primary"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Button>
+                  )}
+                  {userRole === 'student' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate('/student-dashboard')}
+                      className="bg-white/10 border-white/20 text-white hover:bg-white hover:text-primary"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Dashboard
                     </Button>
                   )}
                   <Button

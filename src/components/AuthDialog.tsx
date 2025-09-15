@@ -46,9 +46,10 @@ export const AuthDialog = ({ isOpen, onClose, initialTab = 'login' }: AuthDialog
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const fullName = formData.get('fullName') as string;
+    const role = formData.get('role') as 'teacher' | 'student';
     const schoolLevel = formData.get('schoolLevel') as string;
 
-    const { error } = await signUp(email, password, fullName, schoolLevel);
+    const { error } = await signUp(email, password, fullName, role, schoolLevel);
     
     if (error) {
       toast.error(error.message);
@@ -136,6 +137,18 @@ export const AuthDialog = ({ isOpen, onClose, initialTab = 'login' }: AuthDialog
                   placeholder="Create a password"
                   required
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="role">I am a</Label>
+                <Select name="role" required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="school-level">School Level</Label>

@@ -13,6 +13,9 @@ import TopicPage from "./pages/TopicPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/AdminDashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,9 @@ const App = () => (
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/level/:levelId" element={<LevelPage />} />
             <Route path="/level/:levelId/topic/:topicId" element={<TopicPage />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+            <Route path="/student-dashboard" element={<StudentDashboard />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />

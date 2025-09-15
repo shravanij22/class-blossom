@@ -14,19 +14,19 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 const Admin = () => {
-  const { user, isAdmin } = useAuth();
+  const { userRole, userProfile } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState({ users: 0, topics: 0, games: 0, scores: 0 });
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user || !isAdmin) {
+    if (userRole !== 'admin') {
       navigate('/');
       return;
     }
     fetchAdminData();
-  }, [user, isAdmin, navigate]);
+  }, [userRole, navigate]);
 
   const fetchAdminData = async () => {
     try {
