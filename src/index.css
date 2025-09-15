@@ -17,16 +17,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 15% 20%;
 
-    --primary: 187 100% 42%;
+    --primary: 120 100% 25%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 180 100% 95%;
-    --secondary-foreground: 210 15% 30%;
+    --secondary: 120 50% 95%;
+    --secondary-foreground: 120 20% 30%;
 
-    --muted: 180 100% 95%;
-    --muted-foreground: 210 15% 50%;
+    --muted: 120 30% 95%;
+    --muted-foreground: 120 15% 50%;
 
-    --accent: 187 100% 42%;
+    --accent: 140 100% 35%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,20 +36,20 @@ All colors MUST be HSL.
     --input: 180 50% 90%;
     --ring: 187 100% 42%;
 
-    /* Educational theme colors */
-    --education-primary: 187 100% 42%;
-    --education-light: 180 100% 97%;
+    /* Greenovate theme colors */
+    --education-primary: 120 100% 25%;
+    --education-light: 120 50% 97%;
     --education-card: 0 0% 100%;
-    --education-text: 210 15% 20%;
-    --education-accent: 45 100% 60%;
+    --education-text: 120 30% 15%;
+    --education-accent: 100 100% 40%;
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(187 100% 42%), hsl(200 100% 50%));
-    --gradient-light: linear-gradient(180deg, hsl(180 100% 97%), hsl(180 100% 95%));
+    --gradient-primary: linear-gradient(135deg, hsl(120 100% 25%), hsl(140 100% 35%));
+    --gradient-light: linear-gradient(180deg, hsl(120 50% 97%), hsl(120 30% 95%));
     
     /* Shadows */
-    --shadow-card: 0 4px 20px -2px hsl(187 100% 42% / 0.1);
-    --shadow-hover: 0 8px 30px -5px hsl(187 100% 42% / 0.2);
+    --shadow-card: 0 4px 20px -2px hsl(120 100% 25% / 0.1);
+    --shadow-hover: 0 8px 30px -5px hsl(120 100% 25% / 0.2);
 
     --radius: 0.5rem;
 

@@ -1,4 +1,5 @@
 import { SchoolLevel, Topic, Game } from '@/types/education';
+import { gamesByModule } from './games';
 
 const createTopics = (count: number): Topic[] => {
   return Array.from({ length: count }, (_, i) => ({
@@ -50,28 +51,28 @@ export const educationData: SchoolLevel[] = [
     id: 'primary',
     name: 'Primary School Standard',
     topics: createTopics(8),
-    games: commonGames.filter(game => game.difficulty === 'easy' || game.difficulty === 'medium'),
+    games: gamesByModule.primary,
     overallProgress: 0,
   },
   {
     id: 'middle',
     name: 'Middle School Standard',
     topics: createTopics(12),
-    games: commonGames,
+    games: gamesByModule.middle,
     overallProgress: 0,
   },
   {
     id: 'secondary',
     name: 'Secondary School Standard',
     topics: createTopics(15),
-    games: commonGames,
+    games: gamesByModule.secondary,
     overallProgress: 0,
   },
   {
     id: 'higher',
     name: 'Higher Secondary Standard',
     topics: createTopics(18),
-    games: commonGames,
+    games: gamesByModule.higher,
     overallProgress: 0,
   },
 ];

@@ -12,8 +12,8 @@ export interface Game {
   title: string;
   description: string;
   icon: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  category: 'quiz' | 'builder' | 'memory' | 'puzzle';
+  difficulty: 'easy' | 'medium' | 'hard' | 'expert';
+  category: 'quiz' | 'builder' | 'memory' | 'puzzle' | 'simulation' | 'adventure' | 'calculator' | 'strategy' | 'research' | 'consulting' | 'explorer' | 'sorting';
 }
 
 export interface SchoolLevel {
