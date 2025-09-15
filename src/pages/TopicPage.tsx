@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import YouTubePlayer from '@/components/YouTubePlayer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Play, CheckCircle, ChevronRight } from 'lucide-react';
 import { getSchoolLevel } from '@/data/educationData';
 import { toast } from 'sonner';
 
@@ -16,12 +16,28 @@ const TopicPage = () => {
 
   const schoolLevel = getSchoolLevel(levelId || '');
   const topic = schoolLevel?.topics.find(t => t.id === Number(topicId));
+  
+  // Find next topic in the same level
+  const currentTopicIndex = schoolLevel?.topics.findIndex(t => t.id === Number(topicId)) ?? -1;
+  const nextTopic = currentTopicIndex >= 0 && currentTopicIndex < (schoolLevel?.topics.length ?? 0) - 1 
+    ? schoolLevel?.topics[currentTopicIndex + 1] 
+    : null;
 
   const handleProgressUpdate = (progress: number, completed: boolean) => {
     setWatchProgress(progress);
     if (completed && !isCompleted) {
       setIsCompleted(true);
       toast.success("Topic completed! 🎉");
+    }
+  };
+
+  const handleNextTopic = () => {
+    if (nextTopic) {
+      navigate(`/level/${levelId}/topic/${nextTopic.id}`);
+    } else {
+      // If no next topic, go back to level page
+      navigate(`/level/${levelId}`);
+      toast.success("Level completed! 🎓");
     }
   };
 
@@ -136,15 +152,34 @@ const TopicPage = () => {
               </ul>
             </div>
 
-            <div className="flex justify-center mt-8">
-              <Button 
-                onClick={() => navigate('/games')}
-                className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 text-lg font-semibold rounded-full"
-                disabled={!isCompleted}
-              >
-                <Play className="w-5 h-5 mr-2" />
-                {isCompleted ? 'Play Related Games' : 'Complete Video to Unlock Games'}
-              </Button>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+              {isCompleted ? (
+                <>
+                  <Button 
+                    onClick={handleNextTopic}
+                    className="bg-education-primary hover:bg-education-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-full"
+                  >
+                    <ChevronRight className="w-5 h-5 mr-2" />
+                    {nextTopic ? `Next: ${nextTopic.title}` : 'Back to Level'}
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/games')}
+                    variant="outline"
+                    className="px-8 py-3 text-lg font-semibold rounded-full"
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    Play Games
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  disabled
+                  className="bg-gray-400 text-white px-8 py-3 text-lg font-semibold rounded-full cursor-not-allowed"
+                >
+                  <Play className="w-5 h-5 mr-2 opacity-50" />
+                  Complete Video First
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
