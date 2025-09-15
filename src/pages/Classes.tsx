@@ -1,13 +1,13 @@
 import Header from "@/components/Header";
 import ClassCard from "@/components/ClassCard";
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import primarySchoolImage from "@/assets/primary-school.jpg";
 import middleSchoolImage from "@/assets/middle-school.jpg";
 import highSchoolImage from "@/assets/high-school.jpg";
 import higherSecondaryImage from "@/assets/higher-secondary.jpg";
 
 const Classes = () => {
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const classData = [
     {
@@ -37,10 +37,7 @@ const Classes = () => {
   ];
 
   const handleClassClick = (classItem: typeof classData[0]) => {
-    toast({
-      title: `${classItem.title} Selected`,
-      description: `You've selected ${classItem.title}. Course content will be available soon!`,
-    });
+    navigate(`/level/${classItem.id}`);
   };
 
   return (
