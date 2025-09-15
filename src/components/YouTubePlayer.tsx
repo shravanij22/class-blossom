@@ -28,7 +28,10 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [actualWatchTime, setActualWatchTime] = useState(0);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTimeRef = useRef<number>(0);
+  const totalWatchTimeRef = useRef<number>(0);
 
   useEffect(() => {
     // Load YouTube API if not already loaded
