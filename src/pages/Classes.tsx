@@ -72,7 +72,7 @@ const Classes = () => {
               Ready to Start Learning?
             </h2>
             <p className="text-muted-foreground mb-6">
-              Join thousands of students who are already advancing their education with EcoTech's interactive learning platform.
+              Join thousands of students who are already advancing their education with Greenovate's interactive learning platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">

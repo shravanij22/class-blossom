@@ -13,7 +13,7 @@ const Index = () => {
         <section className="relative py-20 px-4">
           <div className="container mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-education-text mb-6">
-              Welcome to <span className="text-primary">EcoTech</span>
+              Welcome to <span className="text-primary">Greenovate</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Empowering students with innovative educational technology and personalized learning experiences for every grade level.
@@ -38,7 +38,7 @@ const Index = () => {
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-education-text mb-4">
-                Why Choose EcoTech?
+                Why Choose Greenovate?
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Our platform offers comprehensive educational solutions designed to enhance learning outcomes for students of all ages.
@@ -87,7 +87,7 @@ const Index = () => {
                 Ready to Transform Your Learning Experience?
               </h2>
               <p className="text-muted-foreground mb-8 text-lg">
-                Join thousands of students who are already achieving their educational goals with EcoTech's innovative platform.
+                Join thousands of students who are already achieving their educational goals with Greenovate's innovative platform.
               </p>
               <Link to="/classes">
                 <Button size="lg" className="bg-primary text-white hover:bg-primary/90">
