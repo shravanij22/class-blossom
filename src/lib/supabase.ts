@@ -3,11 +3,45 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+// Create a mock client if environment variables are not available
+// This allows the app to load while Supabase integration is being configured
+let supabase: any;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+} else {
+  // Mock Supabase client for development
+  console.warn('⚠️  Supabase environment variables not found. Please ensure your Supabase integration is properly connected in Lovable.');
+  
+  supabase = {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      signInWithPassword: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      signUp: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      signOut: () => Promise.resolve({ error: null }),
+    },
+    from: () => ({
+      select: () => ({ 
+        eq: () => ({ 
+          single: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+          order: () => Promise.resolve({ data: [], error: null }),
+        }),
+        count: 'exact',
+        head: true,
+      }),
+      insert: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      update: () => ({ 
+        eq: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      }),
+      delete: () => ({ 
+        eq: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured' } }),
+      }),
+    }),
+  };
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 export type Database = {
   public: {
