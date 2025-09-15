@@ -47,9 +47,15 @@ export const AuthDialog = ({ isOpen, onClose, initialTab = 'login' }: AuthDialog
     const password = formData.get('password') as string;
     const fullName = formData.get('fullName') as string;
     const role = formData.get('role') as 'teacher' | 'student';
-    const schoolLevel = formData.get('schoolLevel') as string;
+    const schoolName = formData.get('schoolName') as string;
+    const className = formData.get('className') as string;
 
-    const { error } = await signUp(email, password, fullName, role, schoolLevel);
+    const { error } = await signUp(email, password, {
+      full_name: fullName,
+      role,
+      school_name: schoolName || undefined,
+      class_name: className || undefined
+    });
     
     if (error) {
       toast.error(error.message);
@@ -151,18 +157,22 @@ export const AuthDialog = ({ isOpen, onClose, initialTab = 'login' }: AuthDialog
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="school-level">School Level</Label>
-                <Select name="schoolLevel" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your school level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="primary">Primary School</SelectItem>
-                    <SelectItem value="middle">Middle School</SelectItem>
-                    <SelectItem value="secondary">Secondary School</SelectItem>
-                    <SelectItem value="higher">Higher Secondary</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="school-name">School Name</Label>
+                <Input
+                  id="school-name"
+                  name="schoolName"
+                  type="text"
+                  placeholder="Enter your school name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="class-name">Class/Grade (Students only)</Label>
+                <Input
+                  id="class-name"
+                  name="className"
+                  type="text"
+                  placeholder="Enter your class/grade"
+                />
               </div>
               <Button 
                 type="submit" 

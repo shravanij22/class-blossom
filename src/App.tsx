@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
+import { RoleBasedRoute } from "@/components/RoleBasedRoute";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
 import Classes from "./pages/Classes";
 import Games from "./pages/Games";
 import GamePage from "./pages/GamePage";
@@ -29,17 +31,38 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/classes" element={<Classes />} />
             <Route path="/games" element={<Games />} />
             <Route path="/game/:gameId" element={<GamePage />} />
             <Route path="/level/:levelId" element={<LevelPage />} />
             <Route path="/level/:levelId/topic/:topicId" element={<TopicPage />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-            <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-            <Route path="/student-dashboard" element={<StudentDashboard />} />
+            <Route 
+              path="/admin-dashboard" 
+              element={
+                <RoleBasedRoute allowedRoles={['admin']}>
+                  <AdminDashboard />
+                </RoleBasedRoute>
+              } 
+            />
+            <Route 
+              path="/teacher-dashboard" 
+              element={
+                <RoleBasedRoute allowedRoles={['teacher']}>
+                  <TeacherDashboard />
+                </RoleBasedRoute>
+              } 
+            />
+            <Route 
+              path="/student-dashboard" 
+              element={
+                <RoleBasedRoute allowedRoles={['student']}>
+                  <StudentDashboard />
+                </RoleBasedRoute>
+              } 
+            />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
