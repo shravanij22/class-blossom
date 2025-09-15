@@ -153,33 +153,21 @@ const TopicPage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
-              {isCompleted ? (
-                <>
-                  <Button 
-                    onClick={handleNextTopic}
-                    className="bg-education-primary hover:bg-education-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-full"
-                  >
-                    <ChevronRight className="w-5 h-5 mr-2" />
-                    {nextTopic ? `Next: ${nextTopic.title}` : 'Back to Level'}
-                  </Button>
-                  <Button 
-                    onClick={() => navigate('/games')}
-                    variant="outline"
-                    className="px-8 py-3 text-lg font-semibold rounded-full"
-                  >
-                    <Play className="w-5 h-5 mr-2" />
-                    Play Games
-                  </Button>
-                </>
-              ) : (
-                <Button 
-                  disabled
-                  className="bg-gray-400 text-white px-8 py-3 text-lg font-semibold rounded-full cursor-not-allowed"
-                >
-                  <Play className="w-5 h-5 mr-2 opacity-50" />
-                  Complete Video First
-                </Button>
-              )}
+              <Button 
+                onClick={handleNextTopic}
+                className="bg-education-primary hover:bg-education-primary/90 text-white px-8 py-3 text-lg font-semibold rounded-full"
+              >
+                <ChevronRight className="w-5 h-5 mr-2" />
+                {nextTopic ? `Next: ${nextTopic.title}` : 'Back to Level'}
+              </Button>
+              <Button 
+                onClick={() => navigate('/games')}
+                variant="outline"
+                className="px-8 py-3 text-lg font-semibold rounded-full"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Play Games
+              </Button>
             </div>
           </CardContent>
         </Card>

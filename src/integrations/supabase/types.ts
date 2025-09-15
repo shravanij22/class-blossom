@@ -531,6 +531,7 @@ export type Database = {
       }
       video_progress: {
         Row: {
+          actual_watch_time_seconds: number | null
           completed: boolean
           created_at: string
           id: string
@@ -544,6 +545,7 @@ export type Database = {
           watch_time_seconds: number
         }
         Insert: {
+          actual_watch_time_seconds?: number | null
           completed?: boolean
           created_at?: string
           id?: string
@@ -557,6 +559,7 @@ export type Database = {
           watch_time_seconds?: number
         }
         Update: {
+          actual_watch_time_seconds?: number | null
           completed?: boolean
           created_at?: string
           id?: string

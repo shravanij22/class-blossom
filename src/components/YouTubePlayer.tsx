@@ -94,7 +94,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     try {
       const { data, error } = await supabase
         .from('video_progress')
-        .select('progress_percentage, watch_time_seconds')
+        .select('progress_percentage, watch_time_seconds, actual_watch_time_seconds')
         .eq('user_id', user.id)
         .eq('level_id', levelId)
         .eq('topic_id', topicId)
@@ -106,12 +106,14 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
         return;
       }
 
-      if (data && data.watch_time_seconds > 0) {
+      if (data) {
         setProgress(data.progress_percentage);
+        setActualWatchTime(data.actual_watch_time_seconds || 0);
+        totalWatchTimeRef.current = data.actual_watch_time_seconds || 0;
         onProgressUpdate?.(data.progress_percentage, data.progress_percentage >= 95);
         
         // Resume from saved position
-        if (playerRef.current && playerRef.current.seekTo) {
+        if (data.watch_time_seconds > 0 && playerRef.current && playerRef.current.seekTo) {
           playerRef.current.seekTo(data.watch_time_seconds, true);
         }
       }
@@ -125,6 +127,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
       clearInterval(progressIntervalRef.current);
     }
 
+    // Initialize last time for continuous watching detection
+    if (playerRef.current) {
+      lastTimeRef.current = playerRef.current.getCurrentTime();
+    }
+
     progressIntervalRef.current = setInterval(() => {
       if (!playerRef.current || !user) return;
 
@@ -132,14 +139,26 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
         const currentTime = playerRef.current.getCurrentTime();
         const duration = playerRef.current.getDuration();
 
-        if (duration && currentTime) {
+        if (duration && currentTime >= 0) {
           const newProgress = Math.round((currentTime / duration) * 100);
           setProgress(newProgress);
-          onProgressUpdate?.(newProgress, newProgress >= 95);
+          
+          // Track actual watch time (only if playing continuously)
+          const timeDiff = currentTime - lastTimeRef.current;
+          if (timeDiff > 0 && timeDiff <= 2) { // Normal playback (not seeking)
+            totalWatchTimeRef.current += 1;
+            setActualWatchTime(totalWatchTimeRef.current);
+          }
+          
+          lastTimeRef.current = currentTime;
+          
+          // Determine completion based on progress or watch time
+          const isCompleted = newProgress >= 95 || (totalWatchTimeRef.current >= duration * 0.8);
+          onProgressUpdate?.(newProgress, isCompleted);
 
-          // Save progress to database every 5 seconds
-          if (currentTime % 5 < 1) {
-            saveProgress(newProgress, Math.round(currentTime));
+          // Save progress every 3 seconds
+          if (totalWatchTimeRef.current % 3 === 0) {
+            saveProgress(newProgress, Math.round(currentTime), totalWatchTimeRef.current);
           }
         }
       } catch (error) {
@@ -162,7 +181,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
         
         if (duration && currentTime) {
           const finalProgress = Math.round((currentTime / duration) * 100);
-          saveProgress(finalProgress, Math.round(currentTime));
+          saveProgress(finalProgress, Math.round(currentTime), totalWatchTimeRef.current);
         }
       } catch (error) {
         console.error('Error saving final progress:', error);
@@ -170,7 +189,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     }
   };
 
-  const saveProgress = async (progressPercentage: number, watchTimeSeconds: number) => {
+  const saveProgress = async (progressPercentage: number, watchTimeSeconds: number, actualWatchTimeSeconds?: number) => {
     if (!user) return;
 
     try {
@@ -185,6 +204,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
           video_id: videoId,
           progress_percentage: progressPercentage,
           watch_time_seconds: watchTimeSeconds,
+          actual_watch_time_seconds: actualWatchTimeSeconds || totalWatchTimeRef.current,
           completed,
           last_watched_at: new Date().toISOString(),
         }, {
@@ -193,7 +213,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
 
       if (error) {
         console.error('Error saving progress:', error);
-      } else if (completed && progressPercentage === 95) {
+      } else if (completed && progressPercentage >= 95) {
         toast.success("🎉 Video completed! Great job!");
       }
     } catch (error) {
@@ -211,7 +231,15 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
         <div className="mt-4">
           <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
             <span>Progress: {progress}%</span>
+            <span>Watch Time: {Math.floor(actualWatchTime / 60)}:{(actualWatchTime % 60).toString().padStart(2, '0')}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{progress >= 95 ? 'Completed!' : 'In Progress'}</span>
+            {playerRef.current && (
+              <span>
+                Duration: {Math.floor((playerRef.current?.getDuration?.() || 0) / 60)}:{((playerRef.current?.getDuration?.() || 0) % 60).toString().padStart(2, '0')}
+              </span>
+            )}
           </div>
           <div className="w-full bg-secondary rounded-full h-2">
             <div 
