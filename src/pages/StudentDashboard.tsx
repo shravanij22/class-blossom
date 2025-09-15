@@ -9,9 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Trophy, Target, TrendingUp, Award, Star, 
   Play, Clock, CheckCircle, Users, BookOpen,
-  Zap, Medal, Crown, Flame
+  Zap, Medal, Crown, Flame, FileText
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
+import { ProgressReport } from '@/components/ProgressReport';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
@@ -136,10 +137,20 @@ const StudentDashboard = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-education-text mb-2">
-            Welcome back, {userProfile?.full_name}! 🌱
-          </h1>
-          <p className="text-muted-foreground">Ready to make a positive environmental impact today?</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-education-text mb-2">
+                Welcome back, {userProfile?.full_name}! 🌱
+              </h1>
+              <p className="text-muted-foreground">Ready to make a positive environmental impact today?</p>
+            </div>
+            <ProgressReport userType="student">
+              <Button variant="outline" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                My Progress Report
+              </Button>
+            </ProgressReport>
+          </div>
         </div>
 
         {/* Progress Overview */}

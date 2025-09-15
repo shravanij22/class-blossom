@@ -6,9 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, BookOpen, Trophy, Target, TrendingUp, 
-  Plus, Eye, CheckCircle, Clock, Award, Star, Flame 
+  Plus, Eye, CheckCircle, Clock, Award, Star, Flame, FileText
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
+import { ProgressReport } from '@/components/ProgressReport';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
@@ -127,13 +128,23 @@ const TeacherDashboard = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-education-text mb-2">Teacher Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {userProfile?.full_name}</p>
-          <div className="flex items-center gap-4 mt-2">
-            <Badge variant="outline">{userProfile?.school_level} Level</Badge>
-            {userProfile?.class_name && (
-              <Badge variant="outline">Class: {userProfile.class_name}</Badge>
-            )}
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-education-text mb-2">Teacher Dashboard</h1>
+              <p className="text-muted-foreground">Welcome back, {userProfile?.full_name}</p>
+              <div className="flex items-center gap-4 mt-2">
+                <Badge variant="outline">{userProfile?.school_level} Level</Badge>
+                {userProfile?.class_name && (
+                  <Badge variant="outline">Class: {userProfile.class_name}</Badge>
+                )}
+              </div>
+            </div>
+            <ProgressReport userType="teacher">
+              <Button variant="outline" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Student Reports
+              </Button>
+            </ProgressReport>
           </div>
         </div>
 
@@ -216,10 +227,18 @@ const TeacherDashboard = () => {
                           <div className="text-sm text-muted-foreground">Level {student.level}</div>
                           <div className="text-xs text-muted-foreground">Streak: {student.streak}</div>
                         </div>
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4 mr-1" />
-                          View Details
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline">
+                            <Eye className="h-4 w-4 mr-1" />
+                            View Details
+                          </Button>
+                          <ProgressReport userType="teacher" targetUserId={student.id}>
+                            <Button size="sm" variant="outline">
+                              <FileText className="h-4 w-4 mr-1" />
+                              Report
+                            </Button>
+                          </ProgressReport>
+                        </div>
                       </div>
                     </div>
                   ))}
